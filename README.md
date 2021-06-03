@@ -1,3 +1,3 @@
-## QQBot based on Mirai
+# QQBot based on [Mirai](https://github.com/mamoe/mirai)
 
-A simple bot based on Mirai.
+A simple bot based on [Mirai](https://github.com/mamoe/mirai).
