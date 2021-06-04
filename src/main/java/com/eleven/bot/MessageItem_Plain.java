@@ -56,21 +56,26 @@ public class MessageItem_Plain implements MessageItem {
         } else {
             StringBuffer trigger = new StringBuffer(text);
 
+            //remove blank
             while (trigger.length() > 0 && trigger.charAt(0) == ' ') {
                 trigger.delete(0, 1);
             }
+
             List<String> paras = new ArrayList<>();
 
             final int MAX_ALLOWED_TEXT_LENGTH = 30;
 
+            //split words length
             final ArrayList<Integer> ALLOWED_WORD_LENGTH = new ArrayList<>();
             ALLOWED_WORD_LENGTH.add(2);
             ALLOWED_WORD_LENGTH.add(3);
 
+            //only one char
             if (trigger.length() == 1) {
                 paras.add(trigger.toString());
             }
 
+            //split
             for (int len : ALLOWED_WORD_LENGTH) {
                 for (int i = 0; i <= trigger.length() - len && i <= MAX_ALLOWED_TEXT_LENGTH; i++) {
                     paras.add(trigger.substring(i, i + len));
@@ -78,7 +83,10 @@ public class MessageItem_Plain implements MessageItem {
             }
 
             List<JSONArray> triggerResponses = new ArrayList<>();
+
+            //remove duplicate triggers,
             Set<String> duplicate = new HashSet<>();
+
             for (String para : paras) {
                 if (triggers.containsKey(para) && !duplicate.contains(para)) {
                     duplicate.add(para);

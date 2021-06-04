@@ -16,6 +16,7 @@ public class Timer {
         timeMessageList = new ArrayList<>();
         timeMessageList.add(new TimeMessage_Goodnight(0, 0, 317109237L, sessionKey));
         timeMessageList.add(new TimeMessage_GoodAfternoon(15, 0, 317109237L, sessionKey));
+        timeMessageList.add(new TimeMessage_GoodAfternoon(15, 0, 705091577L, sessionKey));
     }
 
     public void sendMessage() {
