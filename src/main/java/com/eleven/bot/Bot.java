@@ -12,6 +12,7 @@ public class Bot {
 
 
     public Bot() {
+
         setUp();
     }
 
@@ -23,6 +24,7 @@ public class Bot {
         while (true) {
             listener.updateMessages();
             listener.handleMessages();
+            timer.updateTime();
             timer.sendMessage();
             try {
                 sleep(1000);

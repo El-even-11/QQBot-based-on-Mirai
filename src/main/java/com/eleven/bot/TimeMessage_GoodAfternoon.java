@@ -31,7 +31,6 @@ public class TimeMessage_GoodAfternoon implements TimeMessage {
 
     @Override
     public void handle() {
-        this.curTime = Calendar.getInstance();
         if (isTriggerTime()) {
             List<JSONArray> messages = new ArrayList<>();
 
@@ -64,6 +63,11 @@ public class TimeMessage_GoodAfternoon implements TimeMessage {
     @Override
     public boolean isTriggerTime() {
         return triggerHour == curTime.get(Calendar.HOUR_OF_DAY) && triggerMinute == curTime.get(Calendar.MINUTE) && curTime.get(Calendar.SECOND) == 0;
+    }
+
+    @Override
+    public void updateTime(Calendar curTime) {
+        this.curTime = curTime;
     }
 
     private String randomRespond() {
