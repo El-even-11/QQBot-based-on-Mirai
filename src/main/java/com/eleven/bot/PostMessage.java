@@ -1,7 +1,9 @@
 package com.eleven.bot;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.eleven.bot.Http.doPost;
@@ -24,5 +26,25 @@ public class PostMessage {
                 }
             }
         }
+    }
+
+    public static List<JSONObject> buildTextToPost(String text) {
+        List<JSONObject> messageChains = new ArrayList<>();
+
+        JSONObject messageChain = new JSONObject();
+
+        JSONArray responses = new JSONArray();
+
+        JSONObject response = new JSONObject();
+
+        response.put("type", "Plain");
+        response.put("text", text);
+
+        responses.add(response);
+        messageChain.put("messageChain", responses);
+
+        messageChains.add(messageChain);
+
+        return messageChains;
     }
 }

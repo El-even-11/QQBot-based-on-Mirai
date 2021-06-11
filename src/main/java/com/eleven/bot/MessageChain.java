@@ -10,9 +10,27 @@ import java.util.List;
 public class MessageChain {
 
     private HashMap<String, MessageItem> requests;
+    private boolean isCommand = false;
+    private String command = null;
+    private JSONArray data;
 
     public MessageChain(JSONArray data) {
+        this.data = data;
+
         requests = new HashMap<>();
+
+        for (Object i : data) {
+            JSONObject cur = (JSONObject) i;
+            String type = cur.getString("type");
+            if (type.equals("Plain")) {
+                String text = cur.getString("text");
+                if (text.length() >= 4 && text.startsWith("cmd ")) {
+                    isCommand = true;
+                    command = text.substring(4);
+                }
+            }
+        }
+
         for (Object i : data) {
             JSONObject cur = (JSONObject) i;
             String type = cur.getString("type");
@@ -27,6 +45,12 @@ public class MessageChain {
     }
 
     public List<JSONObject> formMessageChains() {
+
+        if (isCommand) {
+            Command cmd = new Command(command, data);
+            return cmd.doCommand();
+        }
+
         List<JSONObject> messageChains = new ArrayList<>();
 
         for (String key : requests.keySet()) {
@@ -41,9 +65,5 @@ public class MessageChain {
         }
 
         return messageChains;
-    }
-
-    public void print() {
-
     }
 }

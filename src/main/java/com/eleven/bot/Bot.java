@@ -9,10 +9,10 @@ public class Bot {
     private final Long botQQ = 2473537565L;
     private final String authKey = "INITKEYMKBdPDph";
     private String sessionKey;
-    private final Database database;
+
+    public static final Database database = new Database();
 
     public Bot() {
-        database = new Database();
         setUp();
     }
 

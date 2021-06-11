@@ -7,7 +7,7 @@ public class Database {
     private final String DB_URL = "jdbc:mysql://localhost:3306/bot";
 
     private final String USER = "root";
-    private final String PASS = "zhaoziqianQWE369";
+    private final String PASS = "";
 
     private Connection connection = null;
     private Statement statement = null;
@@ -29,5 +29,11 @@ public class Database {
         }
     }
 
+    public boolean execute(String sql) throws SQLException {
+        return statement.execute(sql);
+    }
 
+    public ResultSet executeQuery(String sql) throws SQLException {
+        return statement.executeQuery(sql);
+    }
 }
