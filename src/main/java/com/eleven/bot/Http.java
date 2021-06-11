@@ -3,7 +3,6 @@ package com.eleven.bot;
 import java.io.BufferedReader;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Http {
@@ -40,8 +39,6 @@ public class Http {
                 }
                 result = sbf.toString();
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -107,8 +104,6 @@ public class Http {
                 }
                 result = sbf.toString();
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -135,6 +130,7 @@ public class Http {
                 }
             }
             // 断开与远程地址url的连接
+            assert connection != null;
             connection.disconnect();
         }
         return result;
