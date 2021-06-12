@@ -2,23 +2,19 @@ package com.eleven.bot;
 
 import com.alibaba.fastjson.JSONArray;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
+
+import static com.eleven.bot.PostMessage.buildTextMessageChains;
 
 public class MessageItem_Plain implements MessageItem {
 
     private final String text;
-    private final HashMap<String, Trigger> triggers = new HashMap<>();
     private Database database = Bot.database;
 
     public MessageItem_Plain(String text) {
         this.text = text;
-
-        triggers.put("晚安", new Trigger_Goodnight());
-        triggers.put("晚上好", new Trigger_Goodnight());
-        triggers.put("小可爱", new Trigger_Call());
-        triggers.put("早", new Trigger_GoodMorning());
-        triggers.put("早安", new Trigger_GoodMorning());
-        triggers.put("早上好", new Trigger_GoodMorning());
     }
 
     @Override
@@ -55,19 +51,54 @@ public class MessageItem_Plain implements MessageItem {
         List<JSONArray> triggerResponses = new ArrayList<>();
 
         //remove duplicate triggers,
-        Set<String> duplicate = new HashSet<>();
+        Set<String> duplicate = new HashSet<>(paras);
 
-        for (String para : paras) {
-
-            //here
-
-            if (triggers.containsKey(para) && !duplicate.contains(para)) {
-                duplicate.add(para);
-                triggerResponses.addAll(triggers.get(para).formTriggerResponses());
-            }
+        for (String para : duplicate) {
+            triggerResponses.addAll(getResponses(para));
         }
 
         return triggerResponses;
     }
+
+    private List<JSONArray> getResponses(String trigger) {
+        List<JSONArray> responses = new ArrayList<>();
+
+        try {
+            //text response
+            String sql = "SELECT response FROM text_triggers WHERE text_trigger='" + trigger + "';";
+            ResultSet rs = database.executeQuery(sql);
+
+            //get rs size
+            rs.last();
+            int size = rs.getRow();
+
+            //random response
+            int pos = (int) (Math.random() * size);
+
+            String textResponse = null;
+            if (rs.first()) {
+
+                for (int i = 0; i < pos; i++) {
+                    rs.next();
+                }
+                textResponse = rs.getString("response");
+            }
+
+            if (textResponse != null) {
+                responses.addAll(buildTextMessageChains(textResponse));
+            }
+
+
+            //image response
+
+            return responses;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+
+        return null;
+    }
+
 
 }

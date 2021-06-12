@@ -3,7 +3,7 @@ package com.eleven.bot;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import static com.eleven.bot.PostMessage.buildTextToPost;
+import static com.eleven.bot.PostMessage.buildTextMessageChainsList;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -32,22 +32,25 @@ public class Command {
 
     private List<JSONObject> setTriggerText() {
         if (paras.length != 3) {
-            return buildTextToPost("命令错误");
+            return buildTextMessageChainsList("命令错误");
         }
 
         String trigger = paras[1];
         String response = paras[2];
 
-        String sql = "INSERT INTO table_name" +
-                "(trigger,response)" +
+        String sql = "INSERT INTO text_triggers" +
+                "(text_trigger,response)" +
                 "VALUES" +
-                "(" + trigger + "," + response + ");";
+                "(\"" + trigger + "\",\"" + response + "\");";
+        System.out.println(sql);
 
         try {
             database.execute(sql);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return buildTextToPost("添加成功");
+
+        System.out.println("Set successfully");
+        return buildTextMessageChainsList("添加成功");
     }
 }

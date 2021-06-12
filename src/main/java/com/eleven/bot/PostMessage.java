@@ -28,23 +28,27 @@ public class PostMessage {
         }
     }
 
-    public static List<JSONObject> buildTextToPost(String text) {
+    public static List<JSONObject> buildTextMessageChainsList(String text) {
         List<JSONObject> messageChains = new ArrayList<>();
-
         JSONObject messageChain = new JSONObject();
-
         JSONArray responses = new JSONArray();
-
         JSONObject response = new JSONObject();
-
         response.put("type", "Plain");
         response.put("text", text);
-
         responses.add(response);
         messageChain.put("messageChain", responses);
-
         messageChains.add(messageChain);
+        return messageChains;
+    }
 
+    public static List<JSONArray> buildTextMessageChains(String text) {
+        List<JSONArray> messageChains = new ArrayList<>();
+        JSONArray responses = new JSONArray();
+        JSONObject response = new JSONObject();
+        response.put("type", "Plain");
+        response.put("text", text);
+        responses.add(response);
+        messageChains.add(responses);
         return messageChains;
     }
 }
