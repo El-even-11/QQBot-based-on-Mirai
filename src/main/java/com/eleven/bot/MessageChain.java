@@ -13,9 +13,11 @@ public class MessageChain {
     private boolean isCommand = false;
     private String command = null;
     private JSONArray data;
+    private final Long senderID;
 
-    public MessageChain(JSONArray data) {
+    public MessageChain(JSONArray data, Long senderID) {
         this.data = data;
+        this.senderID = senderID;
 
         requests = new HashMap<>();
 
@@ -27,6 +29,7 @@ public class MessageChain {
                 if (text.length() >= 4 && text.startsWith("cmd ")) {
                     isCommand = true;
                     command = text.substring(4);
+                    return;
                 }
             }
         }
@@ -47,7 +50,7 @@ public class MessageChain {
     public List<JSONObject> formMessageChains() {
 
         if (isCommand) {
-            Command cmd = new Command(command, data);
+            Command cmd = new Command(command, data, senderID);
             return cmd.doCommand();
         }
 

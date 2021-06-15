@@ -54,7 +54,8 @@ public class MessageItem_Plain implements MessageItem {
         Set<String> duplicate = new HashSet<>(paras);
 
         for (String para : duplicate) {
-            triggerResponses.addAll(getResponses(para));
+
+            triggerResponses.addAll(Objects.requireNonNull(getResponses(para)));
         }
 
         return triggerResponses;

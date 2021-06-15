@@ -1,6 +1,7 @@
 package com.eleven.bot;
 
 import com.alibaba.fastjson.JSONObject;
+
 import static com.eleven.bot.PostMessage.postMessage;
 
 public class Message_Group implements Message {
@@ -18,7 +19,7 @@ public class Message_Group implements Message {
         this.senderName = data.getJSONObject("sender").getString("memberName");
         this.groupID = data.getJSONObject("sender").getJSONObject("group").getLong("id");
         this.groupName = data.getJSONObject("sender").getJSONObject("group").getString("name");
-        this.messageChain = new MessageChain(data.getJSONArray("messageChain"));
+        this.messageChain = new MessageChain(data.getJSONArray("messageChain"), senderID);
     }
 
     @Override

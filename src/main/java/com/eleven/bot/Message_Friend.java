@@ -15,7 +15,7 @@ public class Message_Friend implements Message {
         this.sessionKey = sessionKey;
         this.senderID = data.getJSONObject("sender").getLong("id");
         this.senderName = data.getJSONObject("sender").getString("nickname");
-        this.messageChain = new MessageChain(data.getJSONArray("messageChain"));
+        this.messageChain = new MessageChain(data.getJSONArray("messageChain"), senderID);
     }
 
     @Override
