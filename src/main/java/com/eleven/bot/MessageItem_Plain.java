@@ -34,8 +34,10 @@ public class MessageItem_Plain implements MessageItem {
 
         //split words length
         final ArrayList<Integer> ALLOWED_WORD_LENGTH = new ArrayList<>();
-        ALLOWED_WORD_LENGTH.add(2);
-        ALLOWED_WORD_LENGTH.add(3);
+        final int MAX_ALLOWED_WORD_LENGTH = 10;
+        for (int i = 2; i <= MAX_ALLOWED_WORD_LENGTH; i++) {
+            ALLOWED_WORD_LENGTH.add(i);
+        }
 
         //only one char
         if (trigger.length() == 1) {

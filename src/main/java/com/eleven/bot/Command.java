@@ -16,6 +16,7 @@ public class Command {
     private String[] paras;
     private final Database database;
     private final Long senderID;
+    private final int MAX_ALLOWED_WORD_LENGTH = 10;
 
     public Command(String command, JSONArray data, Long senderID) {
         this.command = command;
@@ -33,7 +34,7 @@ public class Command {
             return setTriggerText();
         } else if (cmd.equalsIgnoreCase("help")) {
             return help();
-        }else if (cmd.equalsIgnoreCase("setTriggerImage")){
+        } else if (cmd.equalsIgnoreCase("setTriggerImage")) {
             return setTriggerImage();
         }
 
@@ -49,7 +50,8 @@ public class Command {
                 return buildTextMessageChainsList("命令错误");
             }
 
-            if (paras[1].length() > 3) {
+
+            if (paras[1].length() > MAX_ALLOWED_WORD_LENGTH) {
                 return buildTextMessageChainsList("添加失败，触发词过长");
             }
 
@@ -103,7 +105,7 @@ public class Command {
                 return buildTextMessageChainsList("命令错误");
             }
 
-            if (paras[1].length() > 3) {
+            if (paras[1].length() > MAX_ALLOWED_WORD_LENGTH) {
                 return buildTextMessageChainsList("添加失败，触发词过长");
             }
 
