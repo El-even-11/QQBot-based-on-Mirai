@@ -38,26 +38,6 @@ public class Command {
         return null;
     }
 
-    private List<JSONObject> help() {
-        StringBuilder response = new StringBuilder("命令以cmd+空格开头，所有命令如下\n\n");
-
-        String sql = "SELECT * FROM commands;";
-
-        try {
-            ResultSet rs = database.executeQuery(sql);
-            while (rs.next()) {
-                response.append(rs.getString("command")).append("\n").append(rs.getString("description")).append("\n\n");
-            }
-
-            response.delete(response.length() - 2, response.length());
-            return buildTextMessageChainsList(response.toString());
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-        return null;
-    }
-
     private List<JSONObject> setTriggerText() {
 
         final int SET_TRIGGER_TEXT_PERMISSION = 1;
@@ -92,6 +72,26 @@ public class Command {
         }
 
         return buildTextMessageChainsList("权限不足");
+    }
+
+    private List<JSONObject> help() {
+        StringBuilder response = new StringBuilder("命令以cmd+空格开头，所有命令如下\n\n");
+
+        String sql = "SELECT * FROM commands;";
+
+        try {
+            ResultSet rs = database.executeQuery(sql);
+            while (rs.next()) {
+                response.append(rs.getString("command")).append("\n").append(rs.getString("description")).append("\n").append("权限 ").append(rs.getInt("permission")).append("\n\n");
+            }
+
+            response.delete(response.length() - 2, response.length());
+            return buildTextMessageChainsList(response.toString());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return null;
     }
 
     private int getPermission() {

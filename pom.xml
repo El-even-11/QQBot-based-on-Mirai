@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.eleven.bot</groupId>
     <artifactId>qqBot</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <name>qqBot</name>
     <url>http://maven.apache.org</url>
     <properties>
@@ -71,7 +71,7 @@
             </testResource>
         </testResources>
         <directory>D:\JavaProjects\QQBot\qqBot\target</directory>
-        <finalName>qqBot-0.1.0</finalName>
+        <finalName>qqBot-0.1.1</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
