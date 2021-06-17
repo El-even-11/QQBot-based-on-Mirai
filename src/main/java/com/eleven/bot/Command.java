@@ -103,6 +103,10 @@ public class Command {
                 return buildTextMessageChainsList("命令错误");
             }
 
+            if (paras[1].length() > 3) {
+                return buildTextMessageChainsList("添加失败，触发词过长");
+            }
+
             String trigger = paras[1];
             String url = null;
 
