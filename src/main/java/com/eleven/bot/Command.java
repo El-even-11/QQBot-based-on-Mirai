@@ -33,6 +33,8 @@ public class Command {
             return setTriggerText();
         } else if (cmd.equalsIgnoreCase("help")) {
             return help();
+        }else if (cmd.equalsIgnoreCase("setTriggerImage")){
+            return setTriggerImage();
         }
 
         return null;
@@ -44,7 +46,6 @@ public class Command {
 
         if (getPermission() >= SET_TRIGGER_TEXT_PERMISSION) {
             if (paras.length != 3) {
-                getPermission();
                 return buildTextMessageChainsList("命令错误");
             }
 
@@ -59,7 +60,6 @@ public class Command {
                     "(text_trigger,response)" +
                     "VALUES" +
                     "(\"" + trigger + "\",\"" + response + "\");";
-            System.out.println(sql);
 
             try {
                 database.execute(sql);
@@ -92,6 +92,47 @@ public class Command {
         }
 
         return null;
+    }
+
+    private List<JSONObject> setTriggerImage() {
+
+        final int SET_TRIGGER_IMAGE_PERMISSION = 1;
+
+        if (getPermission() >= SET_TRIGGER_IMAGE_PERMISSION) {
+            if (paras.length != 2) {
+                return buildTextMessageChainsList("命令错误");
+            }
+
+            String trigger = paras[1];
+            String url = null;
+
+            for (Object i : data) {
+                JSONObject cur = (JSONObject) i;
+                if (cur.getString("type").equals("Image")) {
+                    url = cur.getString("url");
+                }
+            }
+
+            if (url != null) {
+                String sql = "INSERT INTO image_triggers" +
+                        "(image_trigger,url)" +
+                        "VALUES" +
+                        "(\"" + trigger + "\",\"" + url + "\");";
+
+                try {
+                    database.execute(sql);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
+                System.out.println("Set successfully");
+                return buildTextMessageChainsList("添加成功");
+            }
+
+            return buildTextMessageChainsList("图片呢！");
+        }
+
+        return buildTextMessageChainsList("权限不足");
     }
 
     private int getPermission() {

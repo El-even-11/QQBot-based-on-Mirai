@@ -9,10 +9,10 @@ import java.util.List;
 
 public class MessageChain {
 
-    private HashMap<String, MessageItem> requests;
+    private final HashMap<String, MessageItem> requests;
     private boolean isCommand = false;
     private String command = null;
-    private JSONArray data;
+    private final JSONArray data;
     private final Long senderID;
 
     public MessageChain(JSONArray data, Long senderID) {

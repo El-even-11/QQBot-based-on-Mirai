@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static com.eleven.bot.PostMessage.buildImageMessageChains;
 import static com.eleven.bot.PostMessage.buildTextMessageChains;
 
 public class MessageItem_Plain implements MessageItem {
@@ -91,12 +92,34 @@ public class MessageItem_Plain implements MessageItem {
 
 
             //image response
+            sql = "SELECT url FROM image_triggers WHERE image_trigger='" + trigger + "';";
+
+            rs = database.executeQuery(sql);
+
+            //get rs size
+            rs.last();
+            size = rs.getRow();
+
+            //random response
+            pos = (int) (Math.random() * size);
+
+            String url = null;
+            if (rs.first()) {
+
+                for (int i = 0; i < pos; i++) {
+                    rs.next();
+                }
+                url = rs.getString("url");
+            }
+
+            if (url != null) {
+                responses.addAll(buildImageMessageChains(url));
+            }
 
             return responses;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
 
         return null;
     }

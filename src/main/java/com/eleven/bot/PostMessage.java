@@ -51,4 +51,15 @@ public class PostMessage {
         messageChains.add(responses);
         return messageChains;
     }
+
+    public static List<JSONArray> buildImageMessageChains(String url) {
+        List<JSONArray> messageChains = new ArrayList<>();
+        JSONArray responses = new JSONArray();
+        JSONObject response = new JSONObject();
+        response.put("type", "Image");
+        response.put("url", url);
+        responses.add(response);
+        messageChains.add(responses);
+        return messageChains;
+    }
 }
