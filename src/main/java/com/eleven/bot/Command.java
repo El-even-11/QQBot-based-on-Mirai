@@ -40,6 +40,8 @@ public class Command {
             return setTriggerImage();
         } else if (cmd.equalsIgnoreCase("getTriggerText")) {
             return getTriggerText();
+        } else if (cmd.equalsIgnoreCase("getTriggerImage")) {
+            return getTriggerImage();
         }
 
         return null;
@@ -217,7 +219,73 @@ public class Command {
 
 
     private List<JSONObject> getTriggerImage() {
-        return null;
+        final int GET_TRIGGER_IMAGE_PERMISSION = 2;
+        final int GET_TRIGGER_IMAGE_PERMISSION_ALL = 3;
+
+        if (paras.length == 1) {
+            if (getPermission() >= GET_TRIGGER_IMAGE_PERMISSION_ALL) {
+                String sql = "SELECT * FROM image_triggers";
+
+                try {
+                    ResultSet rs = database.executeQuery(sql);
+                    ArrayList<Integer> id = new ArrayList<>();
+                    ArrayList<String> image_triggers = new ArrayList<>();
+                    ArrayList<String> urls = new ArrayList<>();
+
+                    while (rs.next()) {
+                        id.add(rs.getInt("id"));
+                        image_triggers.add(rs.getString("image_trigger"));
+                        urls.add(rs.getString("url"));
+                    }
+
+                    List<JSONObject> messageChains = new ArrayList<>();
+
+                    for (int i = 0; i < id.size(); i++) {
+                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n触发词:" + image_triggers.get(i), urls.get(i)));
+                    }
+
+                    return messageChains;
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+
+            return buildTextMessageChainsList("权限不足");
+        } else if (paras.length == 2) {
+            if (getPermission() >= GET_TRIGGER_IMAGE_PERMISSION) {
+                String sql = "SELECT * FROM image_triggers WHERE image_trigger=\"" + paras[1] + "\"";
+
+                try {
+                    ResultSet rs = database.executeQuery(sql);
+                    ArrayList<Integer> id = new ArrayList<>();
+                    ArrayList<String> urls = new ArrayList<>();
+
+                    while (rs.next()) {
+                        id.add(rs.getInt("id"));
+                        urls.add(rs.getString("url"));
+                    }
+
+                    List<JSONObject> messageChains = new ArrayList<>();
+
+                    for (int i = 0; i < id.size(); i++) {
+                        messageChains.add(buildMessageChain("id:" + id.get(i), urls.get(i)));
+                    }
+
+                    if (messageChains.size() == 0) {
+                        return buildTextMessageChainsList("不存在触发词 " + paras[1]);
+                    }
+
+                    return messageChains;
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            return buildTextMessageChainsList("权限不足");
+        }
+
+        return buildTextMessageChainsList("命令错误");
     }
 
     private int getPermission() {
