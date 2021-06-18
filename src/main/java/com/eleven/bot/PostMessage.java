@@ -28,6 +28,28 @@ public class PostMessage {
         }
     }
 
+    public static JSONObject buildMessageChain(String text, String url) {
+        JSONObject messageChain = new JSONObject();
+        JSONArray responses = new JSONArray();
+        JSONObject textResponse = new JSONObject();
+        JSONObject imageResponse = new JSONObject();
+
+        if (text != null) {
+            textResponse.put("type", "Plain");
+            textResponse.put("text", text);
+            responses.add(textResponse);
+        }
+
+        if (url != null) {
+            imageResponse.put("type", "Image");
+            imageResponse.put("url", url);
+            responses.add(imageResponse);
+        }
+
+        messageChain.put("messageChain", responses);
+        return messageChain;
+    }
+
     public static List<JSONObject> buildTextMessageChainsList(String text) {
         List<JSONObject> messageChains = new ArrayList<>();
         JSONObject messageChain = new JSONObject();

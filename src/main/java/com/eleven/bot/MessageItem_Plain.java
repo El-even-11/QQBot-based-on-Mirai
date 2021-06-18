@@ -15,6 +15,7 @@ public class MessageItem_Plain implements MessageItem {
     private Database database = Bot.database;
 
     public MessageItem_Plain(String text) {
+
         this.text = text;
     }
 
