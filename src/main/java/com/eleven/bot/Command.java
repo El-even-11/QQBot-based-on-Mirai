@@ -42,6 +42,10 @@ public class Command {
             return getTriggerText();
         } else if (cmd.equalsIgnoreCase("getTriggerImage")) {
             return getTriggerImage();
+        } else if (cmd.equalsIgnoreCase("delTriggerText")) {
+            return delTriggerText();
+        } else if (cmd.equalsIgnoreCase("delTriggerImage")) {
+            return delTriggerImage();
         }
 
         return null;
@@ -286,6 +290,64 @@ public class Command {
         }
 
         return buildTextMessageChainsList("命令错误");
+    }
+
+    private List<JSONObject> delTriggerText() {
+        final int DEL_TRIGGER_TEXT_PERMISSION = 2;
+
+        if (getPermission() >= DEL_TRIGGER_TEXT_PERMISSION) {
+            if (paras.length == 2) {
+                String sql = "SELECT * FROM text_triggers WHERE id=" + paras[1];
+
+                try {
+                    ResultSet rs = database.executeQuery(sql);
+                    if (rs.next()) {
+                        sql = "DELETE FROM text_triggers WHERE id=" + paras[1];
+                        database.execute(sql);
+                        return buildTextMessageChainsList("删除成功");
+                    }
+
+                    return buildTextMessageChainsList("删除失败，不存在id=" + paras[1] + "的回复");
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+
+                }
+            }
+
+            return buildTextMessageChainsList("命令错误");
+        }
+
+        return buildTextMessageChainsList("权限不足");
+    }
+
+    private List<JSONObject> delTriggerImage() {
+        final int DEL_TRIGGER_IMAGE_PERMISSION = 2;
+
+        if (getPermission() >= DEL_TRIGGER_IMAGE_PERMISSION) {
+            if (paras.length == 2) {
+                String sql = "SELECT * FROM image_triggers WHERE id=" + paras[1];
+
+                try {
+                    ResultSet rs = database.executeQuery(sql);
+                    if (rs.next()) {
+                        sql = "DELETE FROM image_triggers WHERE id=" + paras[1];
+                        database.execute(sql);
+                        return buildTextMessageChainsList("删除成功");
+                    }
+
+                    return buildTextMessageChainsList("删除失败，不存在id=" + paras[1] + "的回复");
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+
+                }
+            }
+
+            return buildTextMessageChainsList("命令错误");
+        }
+
+        return buildTextMessageChainsList("权限不足");
     }
 
     private int getPermission() {
