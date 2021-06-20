@@ -20,7 +20,7 @@ public class Database {
 
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
             System.out.println("Connect Database Successfully");
 

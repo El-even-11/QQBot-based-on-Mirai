@@ -46,6 +46,8 @@ public class Command {
             return delTriggerText();
         } else if (cmd.equalsIgnoreCase("delTriggerImage")) {
             return delTriggerImage();
+        } else if (cmd.equalsIgnoreCase("setGroupTimer")) {
+            return setGroupTimer();
         }
 
         return null;
@@ -347,6 +349,93 @@ public class Command {
             return buildTextMessageChainsList("命令错误");
         }
 
+        return buildTextMessageChainsList("权限不足");
+    }
+
+    private List<JSONObject> setGroupTimer() {
+        final int SET_GROUP_TIMER_PERMISSION = 2;
+
+        if (getPermission() >= SET_GROUP_TIMER_PERMISSION) {
+
+            //cmd : setGroupTimer target hour minute [text] [url]
+            if (paras.length == 4) {
+                //text : null
+                String url = null;
+
+                for (Object i : data) {
+                    JSONObject cur = (JSONObject) i;
+                    if (cur.getString("type").equals("Image")) {
+                        url = cur.getString("url");
+                    }
+                }
+
+                if (url != null) {
+                    String target = paras[1];
+                    String hour = paras[2];
+                    String minute = paras[3];
+
+                    String sql = "INSERT INTO timers" +
+                            "(target,hour,minute,url)" +
+                            "VALUES" +
+                            "(" + target + "," + hour + "," + minute + ",\"" + url + "\")";
+
+                    try {
+                        database.execute(sql);
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+
+                    System.out.println("Set successfully");
+                    return buildTextMessageChainsList("添加成功");
+                }
+
+                return buildTextMessageChainsList("命令错误");
+
+            } else if (paras.length == 5) {
+                //text != null
+
+                String url = null;
+                for (Object i : data) {
+                    JSONObject cur = (JSONObject) i;
+                    if (cur.getString("type").equals("Image")) {
+                        url = cur.getString("url");
+                    }
+                }
+
+                String target = paras[1];
+                String hour = paras[2];
+                String minute = paras[3];
+                String text = paras[4];
+                String sql;
+
+                if (url != null) {
+                    sql = "INSERT INTO timers" +
+                            "(target,hour,minute,text,url)" +
+                            "VALUES" +
+                            "(" + target + "," + hour + "," + minute + ",\"" + text + "\",\"" + url + "\")";
+                } else {
+                    sql = "INSERT INTO timers" +
+                            "(target,hour,minute,text,url)" +
+                            "VALUES" +
+                            "(" + target + "," + hour + "," + minute + ",\"" + text + "\",\"null\")";
+                }
+
+
+                try {
+                    database.execute(sql);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
+                System.out.println("Set successfully");
+
+
+                return buildTextMessageChainsList("添加成功");
+            }
+
+            return buildTextMessageChainsList("命令错误");
+
+        }
         return buildTextMessageChainsList("权限不足");
     }
 
