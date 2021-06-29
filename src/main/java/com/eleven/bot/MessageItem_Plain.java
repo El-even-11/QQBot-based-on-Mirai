@@ -29,6 +29,14 @@ public class MessageItem_Plain implements MessageItem {
             trigger.delete(0, 1);
         }
 
+        //remove \
+        for (int i = 0; i < trigger.length(); i++) {
+            if (trigger.charAt(i) == '\\') {
+                trigger.deleteCharAt(i);
+                i--;
+            }
+        }
+
         List<String> paras = new ArrayList<>();
 
         final int MAX_ALLOWED_TEXT_LENGTH = 30;
