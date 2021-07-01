@@ -22,19 +22,11 @@ public class MessageItem_Plain implements MessageItem {
     @Override
     public List<JSONArray> formMessageItems() {
 
-        StringBuffer trigger = new StringBuffer(text);
+        StringBuilder trigger = new StringBuilder(text);
 
         //remove blank
         while (trigger.length() > 0 && trigger.charAt(0) == ' ') {
             trigger.delete(0, 1);
-        }
-
-        //remove \
-        for (int i = 0; i < trigger.length(); i++) {
-            if (trigger.charAt(i) == '\\') {
-                trigger.deleteCharAt(i);
-                i--;
-            }
         }
 
         List<String> paras = new ArrayList<>();
@@ -78,7 +70,7 @@ public class MessageItem_Plain implements MessageItem {
 
         try {
             //text response
-            String sql = "SELECT response FROM text_triggers WHERE text_trigger='" + trigger + "';";
+            String sql = "SELECT response FROM text_triggers WHERE text_trigger='" + database.handleEscapeCharacters(trigger) + "';";
             ResultSet rs = database.executeQuery(sql);
 
             //get rs size
@@ -103,7 +95,7 @@ public class MessageItem_Plain implements MessageItem {
 
 
             //image response
-            sql = "SELECT url FROM image_triggers WHERE image_trigger='" + trigger + "';";
+            sql = "SELECT url FROM image_triggers WHERE image_trigger='" + database.handleEscapeCharacters(trigger) + "';";
 
             rs = database.executeQuery(sql);
 

@@ -73,7 +73,7 @@ public class Command {
             String sql = "INSERT INTO text_triggers" +
                     "(text_trigger,response)" +
                     "VALUES" +
-                    "(\"" + trigger + "\",\"" + response + "\");";
+                    "(\"" + database.handleEscapeCharacters(trigger) + "\",\"" + database.handleEscapeCharacters(response) + "\");";
 
             try {
                 database.execute(sql);
@@ -135,7 +135,7 @@ public class Command {
                 String sql = "INSERT INTO image_triggers" +
                         "(image_trigger,url)" +
                         "VALUES" +
-                        "(\"" + trigger + "\",\"" + url + "\");";
+                        "(\"" + database.handleEscapeCharacters(trigger) + "\",\"" + url + "\");";
 
                 try {
                     database.execute(sql);
@@ -189,7 +189,7 @@ public class Command {
             return buildTextMessageChainsList("权限不足");
         } else if (paras.length == 2) {
             if (getPermission() >= GET_TRIGGER_TEXT_PERMISSION) {
-                String sql = "SELECT * FROM text_triggers WHERE text_trigger=\"" + paras[1] + "\"";
+                String sql = "SELECT * FROM text_triggers WHERE text_trigger=\"" + database.handleEscapeCharacters(paras[1]) + "\"";
 
                 try {
                     ResultSet rs = database.executeQuery(sql);
@@ -260,7 +260,7 @@ public class Command {
             return buildTextMessageChainsList("权限不足");
         } else if (paras.length == 2) {
             if (getPermission() >= GET_TRIGGER_IMAGE_PERMISSION) {
-                String sql = "SELECT * FROM image_triggers WHERE image_trigger=\"" + paras[1] + "\"";
+                String sql = "SELECT * FROM image_triggers WHERE image_trigger=\"" + database.handleEscapeCharacters(paras[1]) + "\"";
 
                 try {
                     ResultSet rs = database.executeQuery(sql);
@@ -299,12 +299,12 @@ public class Command {
 
         if (getPermission() >= DEL_TRIGGER_TEXT_PERMISSION) {
             if (paras.length == 2) {
-                String sql = "SELECT * FROM text_triggers WHERE id=" + paras[1];
+                String sql = "SELECT * FROM text_triggers WHERE id=" + database.handleEscapeCharacters(paras[1]);
 
                 try {
                     ResultSet rs = database.executeQuery(sql);
                     if (rs.next()) {
-                        sql = "DELETE FROM text_triggers WHERE id=" + paras[1];
+                        sql = "DELETE FROM text_triggers WHERE id=" + database.handleEscapeCharacters(paras[1]);
                         database.execute(sql);
                         return buildTextMessageChainsList("删除成功");
                     }
@@ -328,12 +328,12 @@ public class Command {
 
         if (getPermission() >= DEL_TRIGGER_IMAGE_PERMISSION) {
             if (paras.length == 2) {
-                String sql = "SELECT * FROM image_triggers WHERE id=" + paras[1];
+                String sql = "SELECT * FROM image_triggers WHERE id=" + database.handleEscapeCharacters(paras[1]);
 
                 try {
                     ResultSet rs = database.executeQuery(sql);
                     if (rs.next()) {
-                        sql = "DELETE FROM image_triggers WHERE id=" + paras[1];
+                        sql = "DELETE FROM image_triggers WHERE id=" + database.handleEscapeCharacters(paras[1]);
                         database.execute(sql);
                         return buildTextMessageChainsList("删除成功");
                     }
