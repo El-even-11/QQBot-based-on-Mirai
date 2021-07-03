@@ -37,14 +37,16 @@ public class Database {
         return statement.executeQuery(sql);
     }
 
-    public String handleEscapeCharacters(String s) {
+    public String regularize(String s) {
         StringBuilder escaped = new StringBuilder(s);
+
         for (int i = 0; i < escaped.length(); i++) {
-            if (escaped.charAt(i) == '\\' || escaped.charAt(i) == '\'') {
+            if (escaped.charAt(i) == '\\' || escaped.charAt(i) == '\'' || escaped.charAt(i) == '\"') {
                 escaped.insert(i, '\\');
                 i++;
             }
         }
+
         return escaped.toString();
     }
 }

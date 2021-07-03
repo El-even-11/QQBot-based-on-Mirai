@@ -70,7 +70,7 @@ public class MessageItem_Plain implements MessageItem {
 
         try {
             //text response
-            String sql = "SELECT response FROM text_triggers WHERE text_trigger='" + database.handleEscapeCharacters(trigger) + "';";
+            String sql = "SELECT response FROM text_triggers WHERE text_trigger=\"" + database.regularize(trigger) + "\"";
             ResultSet rs = database.executeQuery(sql);
 
             //get rs size
@@ -95,7 +95,7 @@ public class MessageItem_Plain implements MessageItem {
 
 
             //image response
-            sql = "SELECT url FROM image_triggers WHERE image_trigger='" + database.handleEscapeCharacters(trigger) + "';";
+            sql = "SELECT url FROM image_triggers WHERE image_trigger=\"" + database.regularize(trigger) + "\"";
 
             rs = database.executeQuery(sql);
 
