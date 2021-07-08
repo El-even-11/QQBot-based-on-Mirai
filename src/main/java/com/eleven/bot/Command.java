@@ -48,6 +48,10 @@ public class Command {
             return delTriggerImage();
         } else if (cmd.equalsIgnoreCase("setGroupTimer")) {
             return setGroupTimer();
+        } else if (cmd.equalsIgnoreCase("getGroupTimer")) {
+            return getGroupTimer();
+        } else if (cmd.equalsIgnoreCase("delGroupTimer")) {
+            return delGroupTimer();
         }
 
         return null;
@@ -415,9 +419,9 @@ public class Command {
                             "(" + target + "," + hour + "," + minute + ",\"" + text + "\",\"" + url + "\")";
                 } else {
                     sql = "INSERT INTO timers" +
-                            "(target,hour,minute,text,url)" +
+                            "(target,hour,minute,text)" +
                             "VALUES" +
-                            "(" + target + "," + hour + "," + minute + ",\"" + text + "\",\"null\")";
+                            "(" + target + "," + hour + "," + minute + ",\"" + text + "\")";
                 }
 
 
@@ -436,6 +440,123 @@ public class Command {
             return buildTextMessageChainsList("命令错误");
 
         }
+        return buildTextMessageChainsList("权限不足");
+    }
+
+    private List<JSONObject> getGroupTimer() {
+        final int GET_GROUP_TIMER_PERMISSION = 2;
+        final int GET_GROUP_TIMER_PERMISSION_ALL = 3;
+
+        if (paras.length == 1) {
+            //get all
+            if (getPermission() >= GET_GROUP_TIMER_PERMISSION_ALL) {
+                try {
+                    String sql = "SELECT * FROM timers";
+                    ResultSet rs = database.executeQuery(sql);
+
+                    ArrayList<Integer> id = new ArrayList<>();
+                    ArrayList<String> text = new ArrayList<>();
+                    ArrayList<String> url = new ArrayList<>();
+                    ArrayList<Long> target = new ArrayList<>();
+                    ArrayList<Integer> hour = new ArrayList<>();
+                    ArrayList<Integer> minute = new ArrayList<>();
+
+                    while (rs.next()) {
+                        id.add(rs.getInt("id"));
+                        text.add(rs.getString("text"));
+                        url.add((rs.getString("url")));
+                        target.add(rs.getLong("target"));
+                        hour.add(rs.getInt("hour"));
+                        minute.add(rs.getInt("minute"));
+                    }
+
+                    List<JSONObject> messageChains = new ArrayList<>();
+                    for (int i = 0; i < id.size(); i++) {
+                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "文本:" + text.get(i) + "\n" + "群号:" + target.get(i) + "\n" + "时间:" + hour.get(i) + ":" + minute.get(i) + "\n", url.get(i)));
+                    }
+
+                    if (messageChains.size() == 0) {
+                        return buildTextMessageChainsList("无对应定时消息");
+                    }
+
+                    return messageChains;
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+
+            return buildTextMessageChainsList("权限不足");
+
+        } else if (paras.length == 2) {
+            //get one
+            if (getPermission() >= GET_GROUP_TIMER_PERMISSION) {
+                try {
+                    String sql = "SELECT * FROM timers WHERE target=" + paras[1];
+                    ResultSet rs = database.executeQuery(sql);
+
+                    ArrayList<Integer> id = new ArrayList<>();
+                    ArrayList<String> text = new ArrayList<>();
+                    ArrayList<String> url = new ArrayList<>();
+                    ArrayList<Integer> hour = new ArrayList<>();
+                    ArrayList<Integer> minute = new ArrayList<>();
+
+                    while (rs.next()) {
+                        id.add(rs.getInt("id"));
+                        text.add(rs.getString("text"));
+                        url.add((rs.getString("url")));
+                        hour.add(rs.getInt("hour"));
+                        minute.add(rs.getInt("minute"));
+                    }
+
+                    List<JSONObject> messageChains = new ArrayList<>();
+                    for (int i = 0; i < id.size(); i++) {
+                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "文本:" + text.get(i) + "\n" + "时间:" + hour.get(i) + ":" + minute.get(i) + "\n", url.get(i)));
+                    }
+
+                    if (messageChains.size() == 0) {
+                        return buildTextMessageChainsList("无对应定时消息");
+                    }
+
+                    return messageChains;
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+
+            return buildTextMessageChainsList("权限不足");
+        }
+
+        return buildTextMessageChainsList("命令错误");
+    }
+
+    private List<JSONObject> delGroupTimer() {
+        final int DEL_GROUP_TIMER_PERMISSION = 2;
+
+        if (getPermission() >= DEL_GROUP_TIMER_PERMISSION) {
+            if (paras.length == 2) {
+                String sql = "SELECT * FROM timers WHERE id=" + paras[1];
+
+                try {
+                    ResultSet rs = database.executeQuery(sql);
+                    if (rs.next()) {
+                        sql = "DELETE FROM timers WHERE id=" + paras[1];
+                        database.execute(sql);
+                        return buildTextMessageChainsList("删除成功");
+                    }
+
+                    return buildTextMessageChainsList("删除失败，不存在id=" + paras[1] + "的定时信息");
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+
+                }
+            }
+
+            return buildTextMessageChainsList("命令错误");
+        }
+
         return buildTextMessageChainsList("权限不足");
     }
 
