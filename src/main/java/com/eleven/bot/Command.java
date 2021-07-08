@@ -46,12 +46,12 @@ public class Command {
             return delTriggerText();
         } else if (cmd.equalsIgnoreCase("delTriggerImage")) {
             return delTriggerImage();
-        } else if (cmd.equalsIgnoreCase("setGroupTimer")) {
-            return setGroupTimer();
-        } else if (cmd.equalsIgnoreCase("getGroupTimer")) {
-            return getGroupTimer();
-        } else if (cmd.equalsIgnoreCase("delGroupTimer")) {
-            return delGroupTimer();
+        } else if (cmd.equalsIgnoreCase("setTimer")) {
+            return setTimer();
+        } else if (cmd.equalsIgnoreCase("getTimer")) {
+            return getTimer();
+        } else if (cmd.equalsIgnoreCase("delTimer")) {
+            return delTimer();
         }
 
         return null;
@@ -356,13 +356,13 @@ public class Command {
         return buildTextMessageChainsList("权限不足");
     }
 
-    private List<JSONObject> setGroupTimer() {
-        final int SET_GROUP_TIMER_PERMISSION = 2;
+    private List<JSONObject> setTimer() {
+        final int SET_TIMER_PERMISSION = 2;
 
-        if (getPermission() >= SET_GROUP_TIMER_PERMISSION) {
+        if (getPermission() >= SET_TIMER_PERMISSION) {
 
-            //cmd : setGroupTimer target hour minute [text] [url]
-            if (paras.length == 4) {
+            //cmd : setTimer target type hour minute [text] [url]
+            if (paras.length == 5) {
                 //text : null
                 String url = null;
 
@@ -375,13 +375,18 @@ public class Command {
 
                 if (url != null) {
                     String target = paras[1];
-                    String hour = paras[2];
-                    String minute = paras[3];
+                    String type = paras[2];
+                    if (!type.equals("Friend") && !type.equals("Group")) {
+                        return buildTextMessageChainsList("命令错误");
+                    }
+
+                    String hour = paras[3];
+                    String minute = paras[4];
 
                     String sql = "INSERT INTO timers" +
-                            "(target,hour,minute,url)" +
+                            "(target,type,hour,minute,url)" +
                             "VALUES" +
-                            "(" + target + "," + hour + "," + minute + ",\"" + url + "\")";
+                            "(" + target + "," + type + "," + hour + "," + minute + ",\"" + url + "\")";
 
                     try {
                         database.execute(sql);
@@ -395,7 +400,7 @@ public class Command {
 
                 return buildTextMessageChainsList("命令错误");
 
-            } else if (paras.length == 5) {
+            } else if (paras.length == 6) {
                 //text != null
 
                 String url = null;
@@ -407,21 +412,26 @@ public class Command {
                 }
 
                 String target = paras[1];
-                String hour = paras[2];
-                String minute = paras[3];
-                String text = paras[4];
+                String type = paras[2];
+                if (!type.equals("Friend") && !type.equals("Group")) {
+                    return buildTextMessageChainsList("命令错误");
+                }
+
+                String hour = paras[3];
+                String minute = paras[4];
+                String text = paras[5];
                 String sql;
 
                 if (url != null) {
                     sql = "INSERT INTO timers" +
-                            "(target,hour,minute,text,url)" +
+                            "(target,type,hour,minute,text,url)" +
                             "VALUES" +
-                            "(" + target + "," + hour + "," + minute + ",\"" + text + "\",\"" + url + "\")";
+                            "(" + target + "," + type + "," + hour + "," + minute + ",\"" + text + "\",\"" + url + "\")";
                 } else {
                     sql = "INSERT INTO timers" +
                             "(target,hour,minute,text)" +
                             "VALUES" +
-                            "(" + target + "," + hour + "," + minute + ",\"" + text + "\")";
+                            "(" + target + "," + type + "," + hour + "," + minute + ",\"" + text + "\")";
                 }
 
 
@@ -443,13 +453,13 @@ public class Command {
         return buildTextMessageChainsList("权限不足");
     }
 
-    private List<JSONObject> getGroupTimer() {
-        final int GET_GROUP_TIMER_PERMISSION = 2;
-        final int GET_GROUP_TIMER_PERMISSION_ALL = 3;
+    private List<JSONObject> getTimer() {
+        final int GET_TIMER_PERMISSION = 2;
+        final int GET_TIMER_PERMISSION_ALL = 3;
 
         if (paras.length == 1) {
             //get all
-            if (getPermission() >= GET_GROUP_TIMER_PERMISSION_ALL) {
+            if (getPermission() >= GET_TIMER_PERMISSION_ALL) {
                 try {
                     String sql = "SELECT * FROM timers";
                     ResultSet rs = database.executeQuery(sql);
@@ -458,6 +468,7 @@ public class Command {
                     ArrayList<String> text = new ArrayList<>();
                     ArrayList<String> url = new ArrayList<>();
                     ArrayList<Long> target = new ArrayList<>();
+                    ArrayList<String> type = new ArrayList<>();
                     ArrayList<Integer> hour = new ArrayList<>();
                     ArrayList<Integer> minute = new ArrayList<>();
 
@@ -466,13 +477,14 @@ public class Command {
                         text.add(rs.getString("text"));
                         url.add((rs.getString("url")));
                         target.add(rs.getLong("target"));
+                        type.add(rs.getString("type"));
                         hour.add(rs.getInt("hour"));
                         minute.add(rs.getInt("minute"));
                     }
 
                     List<JSONObject> messageChains = new ArrayList<>();
                     for (int i = 0; i < id.size(); i++) {
-                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "文本:" + text.get(i) + "\n" + "群号:" + target.get(i) + "\n" + "时间:" + hour.get(i) + ":" + minute.get(i) + "\n", url.get(i)));
+                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "text:" + text.get(i) + "\n" + "target:" + target.get(i) + "\n" + "type:" + type.get(i) + "\n" + "time:" + hour.get(i) + ":" + minute.get(i) + "\n", url.get(i)));
                     }
 
                     if (messageChains.size() == 0) {
@@ -490,7 +502,7 @@ public class Command {
 
         } else if (paras.length == 2) {
             //get one
-            if (getPermission() >= GET_GROUP_TIMER_PERMISSION) {
+            if (getPermission() >= GET_TIMER_PERMISSION) {
                 try {
                     String sql = "SELECT * FROM timers WHERE target=" + paras[1];
                     ResultSet rs = database.executeQuery(sql);
@@ -511,7 +523,7 @@ public class Command {
 
                     List<JSONObject> messageChains = new ArrayList<>();
                     for (int i = 0; i < id.size(); i++) {
-                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "文本:" + text.get(i) + "\n" + "时间:" + hour.get(i) + ":" + minute.get(i) + "\n", url.get(i)));
+                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "text:" + text.get(i) + "\n" + "time:" + hour.get(i) + ":" + minute.get(i) + "\n", url.get(i)));
                     }
 
                     if (messageChains.size() == 0) {
@@ -531,7 +543,7 @@ public class Command {
         return buildTextMessageChainsList("命令错误");
     }
 
-    private List<JSONObject> delGroupTimer() {
+    private List<JSONObject> delTimer() {
         final int DEL_GROUP_TIMER_PERMISSION = 2;
 
         if (getPermission() >= DEL_GROUP_TIMER_PERMISSION) {
