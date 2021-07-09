@@ -22,7 +22,7 @@ public class PostMessage {
                 if (jsonResponse != null && jsonResponse.getIntValue("code") == 0) {
                     System.out.println("post " + type + " message successfully");
                 } else {
-                    System.out.println("post " + type + " fail,code = " + jsonResponse.getIntValue("code"));
+                    System.out.println("post " + type + " fail,code = " + (jsonResponse != null ? jsonResponse.getIntValue("code") : "null"));
                 }
             }
         }
