@@ -394,7 +394,7 @@ public class Command {
                     String sql = "INSERT INTO timers" +
                             "(target,type,hour,minute,url)" +
                             "VALUES" +
-                            "(" + target + "," + type + "," + hour + "," + minute + ",\"" + url + "\")";
+                            "(" + target + ",\"" + type + "\"," + hour + "," + minute + ",\"" + url + "\")";
 
                     try {
                         database.execute(sql);
@@ -434,19 +434,21 @@ public class Command {
                     sql = "INSERT INTO timers" +
                             "(target,type,hour,minute,text,url)" +
                             "VALUES" +
-                            "(" + target + "," + type + "," + hour + "," + minute + ",\"" + text + "\",\"" + url + "\")";
+                            "(" + target + ",\"" + type + "\"," + hour + "," + minute + ",\"" + text + "\",\"" + url + "\")";
                 } else {
                     sql = "INSERT INTO timers" +
-                            "(target,hour,minute,text)" +
+                            "(target,type,hour,minute,text)" +
                             "VALUES" +
-                            "(" + target + "," + type + "," + hour + "," + minute + ",\"" + text + "\")";
+                            "(" + target + ",\"" + type + "\"," + hour + "," + minute + ",\"" + text + "\")";
                 }
 
 
                 try {
+                    System.out.println(sql);
                     database.execute(sql);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
+                    return buildTextMessageChainsList("发生错误");
                 }
 
                 System.out.println("Set successfully");
