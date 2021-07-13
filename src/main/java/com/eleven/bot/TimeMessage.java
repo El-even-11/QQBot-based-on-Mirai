@@ -57,7 +57,8 @@ public class TimeMessage {
         if (curTime.get(Calendar.HOUR_OF_DAY) == hour && curTime.get(Calendar.MINUTE) == minute && curTime.get(Calendar.SECOND) == second) {
             List<JSONObject> messageChains = new ArrayList<>();
             int randomIndex = (int) (Math.random() * texts.size());
-            messageChains.add(buildMessageChain(texts.get(randomIndex), urls.get(randomIndex)));
+            messageChains.add(buildMessageChain(texts.get(randomIndex), null));
+            messageChains.add(buildMessageChain(null, urls.get(randomIndex)));
             postMessage(messageChains, type, target, sessionKey);
         }
     }
