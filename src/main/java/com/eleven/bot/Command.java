@@ -308,9 +308,12 @@ public class Command {
                 try {
                     ResultSet rs = database.executeQuery(sql);
                     if (rs.next()) {
+                        String textTrigger = rs.getString("text_trigger");
+                        String response = rs.getString("response");
+
                         sql = "DELETE FROM text_triggers WHERE id=" + paras[1];
                         database.execute(sql);
-                        return buildTextMessageChainsList("删除成功\n触发词:" + rs.getString("text_trigger") + "\n回复:" + rs.getString("response"));
+                        return buildTextMessageChainsList("删除成功\n触发词:" + textTrigger + "\n回复:" + response);
                     }
 
                     return buildTextMessageChainsList("删除失败，不存在id=" + paras[1] + "的回复");
@@ -337,10 +340,13 @@ public class Command {
                 try {
                     ResultSet rs = database.executeQuery(sql);
                     if (rs.next()) {
+                        String imageTrigger = rs.getString("image_trigger");
+                        String url = rs.getString("url");
+
                         sql = "DELETE FROM image_triggers WHERE id=" + paras[1];
                         database.execute(sql);
                         List<JSONObject> messageChains = new ArrayList<>();
-                        messageChains.add(buildMessageChain("删除成功\n触发词:" + rs.getString("image_trigger") + "\n图片:", rs.getString("url")));
+                        messageChains.add(buildMessageChain("删除成功\n触发词:" + imageTrigger + "\n图片:", url));
                         return messageChains;
                     }
 
@@ -555,10 +561,17 @@ public class Command {
                 try {
                     ResultSet rs = database.executeQuery(sql);
                     if (rs.next()) {
+
+                        String type = rs.getString("type");
+                        String text = rs.getString("text");
+                        Long target = rs.getLong("target");
+                        String time = rs.getInt("hour") + ":" + rs.getInt("minute");
+                        String url = rs.getString("url");
+
                         sql = "DELETE FROM timers WHERE id=" + paras[1];
                         database.execute(sql);
                         List<JSONObject> messageChains = new ArrayList<>();
-                        messageChains.add(buildMessageChain("删除成功\ntype:" + rs.getString("type") + "\ntext:" + rs.getString("text") + "\ntarget:" + rs.getLong("target") + "\ntime:" + rs.getInt("hour") + ":" + rs.getInt("minute") + "\nimage:", rs.getString("url")));
+                        messageChains.add(buildMessageChain("删除成功\ntype:" + type + "\ntext:" + text + "\ntarget:" + target + "\ntime:" + time + "\nimage:", url));
                         return messageChains;
                     }
 
