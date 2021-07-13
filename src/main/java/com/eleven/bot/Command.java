@@ -310,7 +310,7 @@ public class Command {
                     if (rs.next()) {
                         sql = "DELETE FROM text_triggers WHERE id=" + paras[1];
                         database.execute(sql);
-                        return buildTextMessageChainsList("删除成功");
+                        return buildTextMessageChainsList("删除成功\n触发词:" + rs.getString("text_trigger") + "\n回复:" + rs.getString("response"));
                     }
 
                     return buildTextMessageChainsList("删除失败，不存在id=" + paras[1] + "的回复");
@@ -339,7 +339,9 @@ public class Command {
                     if (rs.next()) {
                         sql = "DELETE FROM image_triggers WHERE id=" + paras[1];
                         database.execute(sql);
-                        return buildTextMessageChainsList("删除成功");
+                        List<JSONObject> messageChains = new ArrayList<>();
+                        messageChains.add(buildMessageChain("删除成功\n触发词:" + rs.getString("image_trigger") + "\n图片:", rs.getString("url")));
+                        return messageChains;
                     }
 
                     return buildTextMessageChainsList("删除失败，不存在id=" + paras[1] + "的回复");
@@ -555,7 +557,9 @@ public class Command {
                     if (rs.next()) {
                         sql = "DELETE FROM timers WHERE id=" + paras[1];
                         database.execute(sql);
-                        return buildTextMessageChainsList("删除成功");
+                        List<JSONObject> messageChains = new ArrayList<>();
+                        messageChains.add(buildMessageChain("删除成功\ntype:" + rs.getString("type") + "\ntext:" + rs.getString("text") + "\ntarget:" + rs.getLong("target") + "\ntime:" + rs.getInt("hour") + ":" + rs.getInt("minute") + "\nimage:", rs.getString("url")));
+                        return messageChains;
                     }
 
                     return buildTextMessageChainsList("删除失败，不存在id=" + paras[1] + "的定时信息");
