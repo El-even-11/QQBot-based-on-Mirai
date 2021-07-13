@@ -3,6 +3,7 @@ package com.eleven.bot;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import static com.eleven.bot.Bot.timer;
 import static com.eleven.bot.PostMessage.buildMessageChain;
 import static com.eleven.bot.PostMessage.buildTextMessageChainsList;
 
@@ -402,6 +403,8 @@ public class Command {
                         throwables.printStackTrace();
                     }
 
+                    timer.updateList();
+
                     System.out.println("Set successfully");
                     return buildTextMessageChainsList("添加成功");
                 }
@@ -444,12 +447,13 @@ public class Command {
 
 
                 try {
-                    System.out.println(sql);
                     database.execute(sql);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                     return buildTextMessageChainsList("发生错误");
                 }
+
+                timer.updateList();
 
                 System.out.println("Set successfully");
 
@@ -574,6 +578,9 @@ public class Command {
                         database.execute(sql);
                         List<JSONObject> messageChains = new ArrayList<>();
                         messageChains.add(buildMessageChain("删除成功\ntype:" + type + "\ntext:" + text + "\ntarget:" + target + "\ntime:" + time + "\nimage:", url));
+
+                        timer.updateList();
+
                         return messageChains;
                     }
 

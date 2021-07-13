@@ -6,11 +6,12 @@ import static com.eleven.bot.Http.doPost;
 import static java.lang.Thread.sleep;
 
 public class Bot {
-    private final Long botQQ = 2473537565L;
-    private final String authKey = "INITKEYMKBdPDph";
-    private String sessionKey;
+    private static final Long botQQ = 2473537565L;
+    private static final String authKey = "INITKEYMKBdPDph";
+    public static String sessionKey;
 
     public static final Database database = new Database();
+    public static final Timer timer=new Timer(botQQ,sessionKey);
 
     public Bot() {
         setUp();
@@ -19,7 +20,6 @@ public class Bot {
     public void run() {
 
         MessageListener listener = new MessageListener(botQQ, sessionKey);
-        Timer timer = new Timer(botQQ, sessionKey);
 
         while (true) {
             listener.updateMessages();
