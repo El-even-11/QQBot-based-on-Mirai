@@ -58,6 +58,7 @@ public class Timer {
                 timeMessageList.get(keys.get(i)).addText(texts.get(i));
                 timeMessageList.get(keys.get(i)).addUrls(urls.get(i));
             }
+            timeMessageList.put("0", new TimeMessageQ());
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();

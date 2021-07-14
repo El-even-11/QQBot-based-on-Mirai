@@ -53,6 +53,8 @@ public class Command {
             return getTimer();
         } else if (cmd.equalsIgnoreCase("delTimer")) {
             return delTimer();
+        } else if (cmd.equalsIgnoreCase("addMessageForQ")) {
+            return addMessageForQ();
         }
 
         return null;
@@ -498,7 +500,7 @@ public class Command {
 
                     List<JSONObject> messageChains = new ArrayList<>();
                     for (int i = 0; i < id.size(); i++) {
-                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "text:" + text.get(i) + "\n" + "target:" + target.get(i) + "\n" + "type:" + type.get(i) + "\n" + "time:" + hour.get(i) + ":" + minute.get(i) + "\n", url.get(i)));
+                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "text:" + text.get(i) + "\n" + "target:" + target.get(i) + "\n" + "type:" + type.get(i) + "\n" + "time:" + (hour.get(i) < 10 ? ("0" + hour.get(i)) : hour.get(i) < 10) + ":" + (minute.get(i) < 10 ? ("0" + minute.get(i)) : minute.get(i)) + "\n", url.get(i)));
                     }
 
                     if (messageChains.size() == 0) {
@@ -537,7 +539,7 @@ public class Command {
 
                     List<JSONObject> messageChains = new ArrayList<>();
                     for (int i = 0; i < id.size(); i++) {
-                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "text:" + text.get(i) + "\n" + "time:" + hour.get(i) + ":" + minute.get(i) + "\n", url.get(i)));
+                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "text:" + text.get(i) + "\n" + "time:" + (hour.get(i) < 10 ? ("0" + hour.get(i)) : hour.get(i) < 10) + ":" + (minute.get(i) < 10 ? ("0" + minute.get(i)) : minute.get(i)) + "\n", url.get(i)));
                     }
 
                     if (messageChains.size() == 0) {
@@ -571,7 +573,7 @@ public class Command {
                         String type = rs.getString("type");
                         String text = rs.getString("text");
                         Long target = rs.getLong("target");
-                        String time = rs.getInt("hour") + ":" + rs.getInt("minute");
+                        String time = (rs.getInt("hour") < 10 ? "0" + rs.getInt("hour") : rs.getInt("hour")) + ":" + (rs.getInt("minute") < 10 ? "0" + rs.getInt("minute") : rs.getInt("minute"));
                         String url = rs.getString("url");
 
                         sql = "DELETE FROM timers WHERE id=" + paras[1];
@@ -597,6 +599,30 @@ public class Command {
 
         return buildTextMessageChainsList("权限不足");
     }
+
+    private List<JSONObject> addMessageForQ() {
+        final int ADD_MESSAGE_FOR_Q = 10;
+
+        if (getPermission() >= ADD_MESSAGE_FOR_Q) {
+            if (paras.length == 2) {
+                String sql = "INSERT INTO messages_for_q" +
+                        "(text)" +
+                        "VALUES" +
+                        "(\"" + paras[1] + "\")";
+
+                try {
+                    database.execute(sql);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                    return buildTextMessageChainsList("发生错误");
+                }
+                return buildTextMessageChainsList("添加成功");
+            }
+            return buildTextMessageChainsList("命令错误");
+        }
+        return buildTextMessageChainsList("权限不足");
+    }
+
 
     private int getPermission() {
         String sql = "SELECT permission FROM permissions WHERE QQ=" + senderID + ";";

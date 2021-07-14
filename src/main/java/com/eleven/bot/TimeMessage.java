@@ -2,6 +2,7 @@ package com.eleven.bot;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -11,16 +12,20 @@ import static com.eleven.bot.PostMessage.buildMessageChain;
 import static com.eleven.bot.PostMessage.postMessage;
 
 public class TimeMessage {
-    private final Long target;
-    private final String type;
-    private final int hour;
-    private final int minute;
-    private final int second;
+    private Long target = 0L;
+    private String type = null;
+    private int hour = 0;
+    private int minute = 0;
+    private int second = 0;
 
     private List<String> texts = new ArrayList<>();
     private List<String> urls = new ArrayList<>();
 
     private Calendar curTime;
+
+    public TimeMessage() {
+
+    }
 
     public TimeMessage(Long target, String type, int hour, int minute) {
         this.target = target;
