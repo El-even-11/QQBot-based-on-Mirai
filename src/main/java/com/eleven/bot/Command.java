@@ -654,21 +654,12 @@ public class Command {
                 }
             } else if (paras.length == 3 && paras[1].equals("q")) {
                 String sql = "SELECT * FROM timers WHERE target=" + paras[2];
-
-                ArrayList<String> types = new ArrayList<>();
-                ArrayList<String> texts = new ArrayList<>();
-                ArrayList<String> times = new ArrayList<>();
-                ArrayList<String> urls = new ArrayList<>();
+                boolean isEmpty = true;
 
                 try {
                     ResultSet rs = database.executeQuery(sql);
 
-                    while (rs.next()) {
-                        types.add(rs.getString("type"));
-                        texts.add(rs.getString("text"));
-                        times.add((rs.getInt("hour") < 10 ? "0" + rs.getInt("hour") : rs.getInt("hour")) + ":" + (rs.getInt("minute") < 10 ? "0" + rs.getInt("minute") : rs.getInt("minute")));
-                        urls.add(rs.getString("url"));
-                    }
+                    isEmpty = !rs.next();
 
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
@@ -682,13 +673,13 @@ public class Command {
                     throwables.printStackTrace();
                 }
 
-                List<JSONObject> messageChains = new ArrayList<>();
-
-                for (int i = 0; i < types.size(); i++) {
-                    messageChains.add(buildMessageChain("删除成功\ntype:" + types.get(i) + "\ntext:" + texts.get(i) + "\ntime:" + times.get(i) + "\nimage:", urls.get(i)));
+                if (isEmpty) {
+                    return buildTextMessageChainsList("删除失败，无对应定时消息");
+                } else {
+                    timer.updateList();
+                    return buildTextMessageChainsList("删除成功，已删除target:" + paras[2] + "的全部定时消息");
                 }
 
-                return messageChains;
             }
 
             return buildTextMessageChainsList("命令错误");
