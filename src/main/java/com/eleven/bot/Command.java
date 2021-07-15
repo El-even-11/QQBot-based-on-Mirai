@@ -387,7 +387,7 @@ public class Command {
                 if (url != null) {
                     String target = paras[1];
                     String type = paras[2];
-                    if (!type.equals("Friend") && !type.equals("Group")) {
+                    if (!type.equals("Friend") && !type.equals("Group") || !(Integer.parseInt(paras[3]) >= 0 && Integer.parseInt(paras[3]) <= 23 && Integer.parseInt(paras[4]) >= 0 && Integer.parseInt(paras[4]) <= 59)) {
                         return buildTextMessageChainsList("命令错误");
                     }
 
