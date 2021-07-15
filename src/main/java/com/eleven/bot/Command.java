@@ -372,46 +372,106 @@ public class Command {
 
         if (getPermission() >= SET_TIMER_PERMISSION) {
 
-            //cmd : setTimer target type hour minute [text] [url]
+
             if (paras.length == 5) {
-                //text : null
-                String url = null;
+                //cmd : setTimer [e] target type hour minute [text] [url]
 
-                for (Object i : data) {
-                    JSONObject cur = (JSONObject) i;
-                    if (cur.getString("type").equals("Image")) {
-                        url = cur.getString("url");
+                if (paras[1].equals("e")) {
+                    // cmd : setTimer e target type text [url]
+
+                    String url = null;
+
+                    for (Object i : data) {
+                        JSONObject cur = (JSONObject) i;
+                        if (cur.getString("type").equals("Image")) {
+                            url = cur.getString("url");
+                        }
+
+                        String target = paras[2];
+                        String type = paras[3];
+                        String text = paras[4];
+                        if (!type.equals("Friend") && !type.equals("Group")) {
+                            return buildTextMessageChainsList("命令错误");
+                        }
+
+                        ArrayList<String> SQLs = new ArrayList<>();
+
+                        if (url != null) {
+                            for (int hour = 0; hour < 24; hour++) {
+                                for (int minute = 0; minute < 60; minute++) {
+                                    SQLs.add("INSERT INTO timers" +
+                                            "(target,type,hour,minute,text,url)" +
+                                            "VALUES" +
+                                            "(" + target + ",\"" + type + "\"," + hour + "," + minute + ",\"" + text + "\",\"" + url + "\")");
+                                }
+                            }
+                        } else {
+                            for (int hour = 0; hour < 24; hour++) {
+                                for (int minute = 0; minute < 60; minute++) {
+                                    SQLs.add("INSERT INTO timers" +
+                                            "(target,type,hour,minute,text)" +
+                                            "VALUES" +
+                                            "(" + target + ",\"" + type + "\"," + hour + "," + minute + ",\"" + text + "\")");
+                                }
+                            }
+                        }
+
+
+                        try {
+                            for (String sql : SQLs) {
+                                database.execute(sql);
+                            }
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+
+                        timer.updateList();
+
+                        System.out.println("Set successfully");
+                        return buildTextMessageChainsList("添加成功");
                     }
+
+                } else {
+                    //text : null
+                    String url = null;
+
+                    for (Object i : data) {
+                        JSONObject cur = (JSONObject) i;
+                        if (cur.getString("type").equals("Image")) {
+                            url = cur.getString("url");
+                        }
+                    }
+
+                    if (url != null) {
+                        String target = paras[1];
+                        String type = paras[2];
+                        if (!type.equals("Friend") && !type.equals("Group") || !(Integer.parseInt(paras[3]) >= 0 && Integer.parseInt(paras[3]) <= 23 && Integer.parseInt(paras[4]) >= 0 && Integer.parseInt(paras[4]) <= 59)) {
+                            return buildTextMessageChainsList("命令错误");
+                        }
+
+                        String hour = paras[3];
+                        String minute = paras[4];
+
+                        String sql = "INSERT INTO timers" +
+                                "(target,type,hour,minute,url)" +
+                                "VALUES" +
+                                "(" + target + ",\"" + type + "\"," + hour + "," + minute + ",\"" + url + "\")";
+
+                        try {
+                            database.execute(sql);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+
+                        timer.updateList();
+
+                        System.out.println("Set successfully");
+                        return buildTextMessageChainsList("添加成功");
+                    }
+
+                    return buildTextMessageChainsList("命令错误");
                 }
 
-                if (url != null) {
-                    String target = paras[1];
-                    String type = paras[2];
-                    if (!type.equals("Friend") && !type.equals("Group") || !(Integer.parseInt(paras[3]) >= 0 && Integer.parseInt(paras[3]) <= 23 && Integer.parseInt(paras[4]) >= 0 && Integer.parseInt(paras[4]) <= 59)) {
-                        return buildTextMessageChainsList("命令错误");
-                    }
-
-                    String hour = paras[3];
-                    String minute = paras[4];
-
-                    String sql = "INSERT INTO timers" +
-                            "(target,type,hour,minute,url)" +
-                            "VALUES" +
-                            "(" + target + ",\"" + type + "\"," + hour + "," + minute + ",\"" + url + "\")";
-
-                    try {
-                        database.execute(sql);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
-
-                    timer.updateList();
-
-                    System.out.println("Set successfully");
-                    return buildTextMessageChainsList("添加成功");
-                }
-
-                return buildTextMessageChainsList("命令错误");
 
             } else if (paras.length == 6) {
                 //text != null
