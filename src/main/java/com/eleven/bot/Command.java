@@ -592,6 +592,43 @@ public class Command {
                     throwables.printStackTrace();
 
                 }
+            } else if (paras.length == 3 && paras[1] == "q") {
+                String sql = "SELECT * FROM timers WHERE target=" + paras[2];
+
+                ArrayList<String> types = new ArrayList<>();
+                ArrayList<String> texts = new ArrayList<>();
+                ArrayList<String> times = new ArrayList<>();
+                ArrayList<String> urls = new ArrayList<>();
+
+                try {
+                    ResultSet rs = database.executeQuery(sql);
+
+                    while (rs.next()) {
+                        types.add(rs.getString("type"));
+                        texts.add(rs.getString("text"));
+                        times.add((rs.getInt("hour") < 10 ? "0" + rs.getInt("hour") : rs.getInt("hour")) + ":" + (rs.getInt("minute") < 10 ? "0" + rs.getInt("minute") : rs.getInt("minute")));
+                        urls.add(rs.getString("url"));
+                    }
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
+                sql = "DELETE FROM timers WHERE target=" + paras[2];
+
+                try {
+                    database.execute(sql);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
+                List<JSONObject> messageChains = new ArrayList<>();
+
+                for (int i = 0; i < types.size(); i++) {
+                    messageChains.add(buildMessageChain("删除成功\ntype:" + types.get(i) + "\ntext:" + texts.get(i) + "\ntime:" + times.get(i) + "\nimage:", urls.get(i)));
+                }
+
+                return messageChains;
             }
 
             return buildTextMessageChainsList("命令错误");
