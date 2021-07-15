@@ -592,7 +592,7 @@ public class Command {
                     throwables.printStackTrace();
 
                 }
-            } else if (paras.length == 3 && paras[1] == "q") {
+            } else if (paras.length == 3 && paras[1].equals("q")) {
                 String sql = "SELECT * FROM timers WHERE target=" + paras[2];
 
                 ArrayList<String> types = new ArrayList<>();
