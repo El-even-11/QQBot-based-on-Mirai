@@ -500,7 +500,7 @@ public class Command {
 
                     List<JSONObject> messageChains = new ArrayList<>();
                     for (int i = 0; i < id.size(); i++) {
-                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "text:" + text.get(i) + "\n" + "target:" + target.get(i) + "\n" + "type:" + type.get(i) + "\n" + "time:" + (hour.get(i) < 10 ? ("0" + hour.get(i)) : hour.get(i) < 10) + ":" + (minute.get(i) < 10 ? ("0" + minute.get(i)) : minute.get(i)) + "\n", url.get(i)));
+                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "text:" + text.get(i) + "\n" + "target:" + target.get(i) + "\n" + "type:" + type.get(i) + "\n" + "time:" + (hour.get(i) < 10 ? ("0" + hour.get(i)) : hour.get(i)) + ":" + (minute.get(i) < 10 ? ("0" + minute.get(i)) : minute.get(i)) + "\n", url.get(i)));
                     }
 
                     if (messageChains.size() == 0) {
@@ -539,7 +539,7 @@ public class Command {
 
                     List<JSONObject> messageChains = new ArrayList<>();
                     for (int i = 0; i < id.size(); i++) {
-                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "text:" + text.get(i) + "\n" + "time:" + (hour.get(i) < 10 ? ("0" + hour.get(i)) : hour.get(i) < 10) + ":" + (minute.get(i) < 10 ? ("0" + minute.get(i)) : minute.get(i)) + "\n", url.get(i)));
+                        messageChains.add(buildMessageChain("id:" + id.get(i) + "\n" + "text:" + text.get(i) + "\n" + "time:" + (hour.get(i) < 10 ? ("0" + hour.get(i)) : hour.get(i)) + ":" + (minute.get(i) < 10 ? ("0" + minute.get(i)) : minute.get(i)) + "\n", url.get(i)));
                     }
 
                     if (messageChains.size() == 0) {
