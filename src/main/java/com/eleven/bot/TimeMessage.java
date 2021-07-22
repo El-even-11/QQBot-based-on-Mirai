@@ -2,7 +2,6 @@ package com.eleven.bot;
 
 import com.alibaba.fastjson.JSONObject;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -18,8 +17,8 @@ public class TimeMessage {
     private int minute = 0;
     private int second = 0;
 
-    private List<String> texts = new ArrayList<>();
-    private List<String> urls = new ArrayList<>();
+    private final List<String> texts = new ArrayList<>();
+    private final List<String> urls = new ArrayList<>();
 
     private Calendar curTime;
 
@@ -35,25 +34,18 @@ public class TimeMessage {
         second = (int) (Math.random() * 60);
     }
 
-    public TimeMessage(Long target, String type, int hour, int minute, List<String> texts, List<String> urls) {
-        this.target = target;
-        this.type = type;
-        this.texts = texts;
-        this.urls = urls;
-        this.hour = hour;
-        this.minute = minute;
-        second = (int) (Math.random() * 60);
-    }
-
     public void addText(String text) {
+
         texts.add(text);
     }
 
     public void addUrls(String url) {
+
         urls.add(url);
     }
 
     public void updateTime(Calendar curTime) {
+
         this.curTime = curTime;
     }
 

@@ -29,8 +29,8 @@ public class Database {
         }
     }
 
-    public boolean execute(String sql) throws SQLException {
-        return statement.execute(sql);
+    public void execute(String sql) throws SQLException {
+        statement.execute(sql);
     }
 
     public ResultSet executeQuery(String sql) throws SQLException {

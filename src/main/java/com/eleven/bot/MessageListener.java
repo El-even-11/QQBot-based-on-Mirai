@@ -11,9 +11,9 @@ import static com.eleven.bot.Http.doGet;
 
 public class MessageListener {
 
-    private Long botQQ;
-    private String sessionKey;
-    private Queue<Message> unhandledMessage = new LinkedList<>();
+    private final Long botQQ;
+    private final String sessionKey;
+    private final Queue<Message> unhandledMessage = new LinkedList<>();
 
     public MessageListener(Long botQQ, String sessionKey) {
         this.botQQ = botQQ;

@@ -12,7 +12,7 @@ import static com.eleven.bot.PostMessage.buildTextMessageChains;
 public class MessageItem_Plain implements MessageItem {
 
     private final String text;
-    private Database database = Bot.database;
+    private final Database database = Bot.database;
 
     public MessageItem_Plain(String text) {
 
