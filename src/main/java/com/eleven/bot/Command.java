@@ -14,15 +14,13 @@ import java.util.List;
 
 public class Command {
 
-    private String command;
-    private JSONArray data;
-    private String[] paras;
+    private final JSONArray data;
+    private final String[] paras;
     private final Database database;
     private final Long senderID;
     private final int MAX_ALLOWED_WORD_LENGTH = 10;
 
     public Command(String command, JSONArray data, Long senderID) {
-        this.command = command;
         this.data = data;
         this.paras = command.split(" ");
         this.database = Bot.database;
@@ -394,33 +392,29 @@ public class Command {
                             return buildTextMessageChainsList("命令错误");
                         }
 
-                        ArrayList<String> SQLs = new ArrayList<>();
+                        StringBuilder sql = new StringBuilder("INSERT INTO timers");
 
                         if (url != null) {
+                            sql.append("(target,type,hour,minute,text,url)VALUES");
                             for (int hour = 0; hour < 24; hour++) {
                                 for (int minute = 0; minute < 60; minute++) {
-                                    SQLs.add("INSERT INTO timers" +
-                                            "(target,type,hour,minute,text,url)" +
-                                            "VALUES" +
-                                            "(" + target + ",\"" + type + "\"," + hour + "," + minute + ",\"" + text + "\",\"" + url + "\")");
+                                    sql.append("(").append(target).append(",\"").append(type).append("\",").append(hour).append(",").append(minute).append(",\"").append(text).append("\",\"").append(url).append("\"),");
                                 }
                             }
                         } else {
+                            sql.append("(target,type,hour,minute,text)VALUES");
                             for (int hour = 0; hour < 24; hour++) {
                                 for (int minute = 0; minute < 60; minute++) {
-                                    SQLs.add("INSERT INTO timers" +
-                                            "(target,type,hour,minute,text)" +
-                                            "VALUES" +
-                                            "(" + target + ",\"" + type + "\"," + hour + "," + minute + ",\"" + text + "\")");
+                                    sql.append("(").append(target).append(",\"").append(type).append("\",").append(hour).append(",").append(minute).append(",\"").append(text).append("\"),");
                                 }
                             }
                         }
-
+                        //remove ','
+                        sql.deleteCharAt(sql.length() - 1);
 
                         try {
-                            for (String sql : SQLs) {
-                                database.execute(sql);
-                            }
+
+                            database.execute(sql.toString());
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
