@@ -20,6 +20,7 @@ public class Message_Friend implements Message {
 
     @Override
     public void handle() {
+
         postMessage(messageChain.formMessageChains(), "Friend", senderID, sessionKey);
     }
 }
