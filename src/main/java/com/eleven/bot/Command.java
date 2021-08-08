@@ -303,25 +303,30 @@ public class Command {
         final int DEL_TRIGGER_TEXT_PERMISSION = 2;
 
         if (getPermission() >= DEL_TRIGGER_TEXT_PERMISSION) {
-            if (paras.length == 2) {
-                String sql = "SELECT * FROM text_triggers WHERE id=" + paras[1];
+            if (paras.length > 2) {
+                StringBuilder sSQL = new StringBuilder("SELECT * FROM text_triggers WHERE id=" + paras[1]);
+                StringBuilder dSQL = new StringBuilder("DELETE FROM text_triggers WHERE id=" + paras[1]);
 
+                for (int i = 2; i < paras.length; i++) {
+                    sSQL.append(" OR id=").append(paras[i]);
+                    dSQL.append(" OR id=").append(paras[i]);
+                }
                 try {
-                    ResultSet rs = database.executeQuery(sql);
-                    if (rs.next()) {
+                    ResultSet rs = database.executeQuery(sSQL.toString());
+                    StringBuilder returnMessage = new StringBuilder("删除成功\n");
+                    while (rs.next()) {
                         String textTrigger = rs.getString("text_trigger");
                         String response = rs.getString("response");
 
-                        sql = "DELETE FROM text_triggers WHERE id=" + paras[1];
-                        database.execute(sql);
-                        return buildTextMessageChainsList("删除成功\n触发词:" + textTrigger + "\n回复:" + response);
+                        returnMessage.append("text:").append(textTrigger).append("\nresp:").append(response).append("\n");
                     }
 
-                    return buildTextMessageChainsList("删除失败，不存在id=" + paras[1] + "的回复");
+                    database.execute(dSQL.toString());
+
+                    return buildTextMessageChainsList(returnMessage.toString());
 
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
-
                 }
             }
 
@@ -335,27 +340,30 @@ public class Command {
         final int DEL_TRIGGER_IMAGE_PERMISSION = 2;
 
         if (getPermission() >= DEL_TRIGGER_IMAGE_PERMISSION) {
-            if (paras.length == 2) {
-                String sql = "SELECT * FROM image_triggers WHERE id=" + paras[1];
+            if (paras.length > 2) {
+                StringBuilder sSQL = new StringBuilder("SELECT * FROM image_triggers WHERE id=" + paras[1]);
+                StringBuilder dSQL = new StringBuilder("DELETE FROM image_triggers WHERE id=" + paras[1]);
+
+                for (int i = 2; i < paras.length; i++) {
+                    sSQL.append(" OR id=").append(paras[i]);
+                    dSQL.append(" OR id=").append(paras[i]);
+                }
 
                 try {
-                    ResultSet rs = database.executeQuery(sql);
-                    if (rs.next()) {
-                        String imageTrigger = rs.getString("image_trigger");
+                    ResultSet rs = database.executeQuery(sSQL.toString());
+                    List<JSONObject> returnMessage=new ArrayList<>();
+                    while (rs.next()) {
+                        String text = rs.getString("image_trigger");
                         String url = rs.getString("url");
-
-                        sql = "DELETE FROM image_triggers WHERE id=" + paras[1];
-                        database.execute(sql);
-                        List<JSONObject> messageChains = new ArrayList<>();
-                        messageChains.add(buildMessageChain("删除成功\n触发词:" + imageTrigger + "\n图片:", url));
-                        return messageChains;
+                        returnMessage.add(buildMessageChain("删除成功\ntext:" + text + "\nurl:", url));
                     }
 
-                    return buildTextMessageChainsList("删除失败，不存在id=" + paras[1] + "的回复");
+                    database.execute(dSQL.toString());
+
+                    return returnMessage;
 
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
-
                 }
             }
 
