@@ -340,7 +340,7 @@ public class Command {
         final int DEL_TRIGGER_IMAGE_PERMISSION = 2;
 
         if (getPermission() >= DEL_TRIGGER_IMAGE_PERMISSION) {
-            if (paras.length > 2) {
+            if (paras.length > 1) {
                 StringBuilder sSQL = new StringBuilder("SELECT * FROM image_triggers WHERE id=" + paras[1]);
                 StringBuilder dSQL = new StringBuilder("DELETE FROM image_triggers WHERE id=" + paras[1]);
 
